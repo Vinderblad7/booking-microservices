@@ -1,0 +1,16 @@
+# Python / Virtualenv
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+ENV/
+
+# Environment variables
+.env
+
+# Docker data
+postgres_data/
+
+# IDE
+.vscode/
+.idea/
