@@ -1,0 +1,123 @@
+.header {
+    width: 100%;
+    background-color: rgba(0,0,0,0.03); /* полупрозрачный фон */
+    padding: 20px;
+}
+
+.header-container {
+    width: min(100% - (var(--container-padding) * 2), var(--container-width));
+
+    height: var(--header-height);
+
+    margin-inline: auto;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+
+    flex-shrink: 0;
+}
+
+.logo img {
+    width: 45px;
+    height: 45px;
+
+    margin-right: 10px;
+}
+
+.logo-text {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.brand-top,
+.brand-bottom {
+    font-size: 16px;
+    font-weight: 550;
+}
+
+.brand-bottom {
+    padding-left: 10px;
+}
+
+.navigation {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.navigation a {
+    font-size: 14px;
+    font-weight: 500;
+
+    color: var(--color-light-gray);
+    transition: var(--transition-duration);
+}
+
+.navigation a:hover {
+    transform: translateY(-2px);
+    color: white;
+}
+
+.actions {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.lang-currency-switcher {
+    color: var(--color-light-gray);
+    font-size: 14px;
+
+    transition: var(--transition-duration);
+}
+
+.lang-currency-switcher:hover {
+    transform: translateY(-2px);
+    color: white;
+}
+
+.login-button {
+   font-size: 16px; 
+   font-weight: 500;
+
+   transition: var(--transition-duration);
+}
+
+.login-button:hover {
+    transform: translateY(-2px);
+    color: var(--color-light-gray);
+}
+
+.signup-button {
+    position: relative;
+    font-size: 16px;
+    font-weight: 600;
+
+    background-color: var(--color-blue);
+
+    padding: 8px 40px 8px 20px;
+
+    border-radius: var(--border-radius-sm);
+
+    transition: var(--transition-duration);
+}
+
+.signup-button:hover {
+    background-color: rgba(7, 106, 255, 0.8);
+}
+
+.signup-button::before {
+    content: url('../../assets/icons/arrow-right.svg');
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-40%);
+}
+

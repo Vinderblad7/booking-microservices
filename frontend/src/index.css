@@ -207,6 +207,7 @@ svg * {
   /* Макет */
   --container-width: 1200px;
   --container-padding: 40px;
+  --header-height: 40px;
 
   /* UI */
   --border-radius-sm: 10px;
@@ -215,7 +216,7 @@ svg * {
   --border-radius-xl: 24px;
 
   /* Transitions */
-  --transition-duration: 0.2s;
+  --transition-duration: 0.2s ease;
 }
 
 @font-face {

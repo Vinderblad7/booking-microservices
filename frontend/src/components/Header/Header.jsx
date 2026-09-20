@@ -1,14 +1,20 @@
 import logoBadge from '../../assets/icons/logo-badge.svg';
+import './Header.css';
 
 function Header() {
     return (
         <header className="header">
-            
-            <div className="container">
+
+            <div className="header-container">
 
                 <div className="logo">
-                    <img src={logoBadge} alt="Logo" />
-                    <span className="logo-text">Vinderblad & Kudoxq</span>
+                    <img src={logoBadge} alt="badge" className="logo-badge" />
+
+                    <div className="logo-text">
+                        <span className="brand-top">Vinderblad &</span>
+                        <span className="brand-bottom">Kudoxq</span>
+                    </div>
+                    
                 </div>
                 
                 <nav className="navigation">
