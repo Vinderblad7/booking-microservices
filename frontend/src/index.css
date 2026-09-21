@@ -195,10 +195,11 @@ svg * {
   /* Цвета */
   --color-blue: rgba(0, 102, 255, 1);
   --color-light-blue: rgba(0, 210, 255, 1);
-  --color-dark-blue: rgba(15, 25, 53, 0.702);
+  --color-dark-blue: rgba(15, 25, 53, 0.50);
   --color-orange: rgba(255, 90, 54, 1);
   --color-light-gray: rgba(228, 233, 242, 1);
   --color-gray: rgba(143, 155, 179, 1);
+  --color-stroke: rgba(228, 233, 242, 0.25);
 
   /* Шрифты */
   --font-main: 'Sora', sans-serif;
@@ -208,6 +209,7 @@ svg * {
   --container-width: 1200px;
   --container-padding: 40px;
   --header-height: 40px;
+  --def-padding: 20px;
 
   /* UI */
   --border-radius-sm: 10px;

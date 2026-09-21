@@ -1,7 +1,7 @@
 .header {
     width: 100%;
     background-color: rgba(0,0,0,0.03); /* полупрозрачный фон */
-    padding: 20px;
+    padding: var(--def-padding);
 }
 
 .header-container {

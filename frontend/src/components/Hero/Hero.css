@@ -1,0 +1,16 @@
+.hero {
+    max-height: 600px;
+    padding: var(--def-padding);
+}
+
+.hero-container {
+    width: min(100% - (var(--container-padding) * 2), var(--container-width));
+    margin-inline: auto;
+    padding-top: 40px;
+
+}
+
+.hero-title {
+    padding-bottom: 5px;
+    font-size: 38px;
+}
