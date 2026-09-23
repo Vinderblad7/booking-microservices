@@ -45,10 +45,7 @@ class BookingRepository:
         check_out: date,
         exclude_booking_id: int | None = None,
     ) -> bool:
-        """
-        Проверяет, свободна ли комната на указанные даты.
-        Пересечение дат: new_check_in < existing_check_out AND new_check_out > existing_check_in
-        """
+        
         query = select(Booking).where(
             Booking.room_id == room_id,
             Booking.status != BookingStatus.CANCELLED,

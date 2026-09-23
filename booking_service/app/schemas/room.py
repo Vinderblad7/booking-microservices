@@ -1,36 +1,25 @@
-from datetime import date, datetime
 from decimal import Decimal
-
-from pydantic import BaseModel, ConfigDict, Field, model_validator
-
-from app.models.booking import BookingStatus
+from pydantic import BaseModel, ConfigDict, Field
 
 
-class BookingBase(BaseModel):
-    check_in: date
-    check_out: date
-
-    @model_validator(mode="after")
-    def validate_dates(self) -> "BookingBase":
-        if self.check_out <= self.check_in:
-            raise ValueError("check_out must be strictly after check_in")
-        return self
+class RoomBase(BaseModel):
+    hotel_id: int
+    number: str = Field(..., max_length=20, description="Номер или название комнаты")
+    price: Decimal = Field(..., gt=0, description="Цена за ночь")
+    capacity: int = Field(default=2, gt=0, description="Вместимость (человек)")
 
 
-class BookingCreate(BookingBase):
-    room_id: int
+class RoomCreate(RoomBase):
+    pass
 
 
-class BookingResponse(BookingBase):
+class RoomUpdate(BaseModel):
+    number: str | None = Field(default=None, max_length=20)
+    price: Decimal | None = Field(default=None, gt=0)
+    capacity: int | None = Field(default=None, gt=0)
+
+
+class RoomResponse(RoomBase):
     id: int
-    room_id: int
-    user_id: int
-    total_price: Decimal
-    status: BookingStatus
-    created_at: datetime
 
     model_config = ConfigDict(from_attributes=True)
-
-
-class BookingStatusUpdate(BaseModel):
-    status: BookingStatus
