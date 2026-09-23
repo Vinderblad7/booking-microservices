@@ -50,6 +50,31 @@
     font-weight: 500;
 }
 
+.search-field-select {
+    width: 100%;
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+
+    cursor: pointer;
+
+    padding-right: 30px;
+
+    font-size: 16px;
+    font-weight: 500;
+    color: white;
+    border: none;
+    background: none;
+}
+
+.search-field-select-date {
+  filter: invert(1);
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+
 .search-field-button {
     position: relative;
     padding: 22px 63px 22px 37px;

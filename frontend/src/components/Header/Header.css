@@ -49,11 +49,11 @@
 .navigation {
     display: flex;
     align-items: center;
-    gap: 20px;
+    gap: 25px;
 }
 
 .navigation a {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 500;
 
     color: var(--color-light-gray);
