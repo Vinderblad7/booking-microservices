@@ -1,8 +1,9 @@
-from app.repositories.room import RoomRepository
-from app.repositories.hotel import HotelRepository
-from app.schemas.room import RoomCreate, RoomUpdate
+from app.exceptions import HotelNotFoundError, RoomNotFoundError
 from app.models.room import Room
-from app.exceptions import RoomNotFoundError, HotelNotFoundError
+from app.repositories.hotel import HotelRepository
+from app.repositories.room import RoomRepository
+from app.schemas.room import RoomCreate, RoomUpdate
+
 
 class RoomService:
     def __init__(self, room_repo: RoomRepository, hotel_repo: HotelRepository):
@@ -26,17 +27,13 @@ class RoomService:
         return await self.room_repo.create(data.model_dump())
 
     async def update(self, room_id: int, room_data: RoomUpdate) -> Room:
-        room = await self.room_repo.get_by_id(room_id)
-        if not room:
-            raise RoomNotFoundError(f"Room with id {room_id} not found")
+        room = await self.get_by_id(room_id)
 
         data = room_data.model_dump(exclude_unset=True)
 
-        return await self.room_repo.update(room_id, data)
+        return await self.room_repo.update(room, data)
 
     async def delete(self, room_id: int) -> None:
-        room = await self.room_repo.get_by_id(room_id)
-        if not room:
-            raise RoomNotFoundError(f"Room with id {room_id} not found")
+        room = await self.get_by_id(room_id)
 
-        await self.room_repo.delete(room_id)
+        await self.room_repo.delete(room)

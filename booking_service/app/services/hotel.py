@@ -1,8 +1,10 @@
+from slugify import slugify
+
+from app.exceptions import HotelAlreadyExistsError, HotelNotFoundError
+from app.models.hotel import Hotel
 from app.repositories.hotel import HotelRepository
 from app.schemas.hotel import HotelCreate, HotelUpdate
-from app.models.hotel import Hotel
-from app.exceptions import HotelNotFoundError, HotelAlreadyExistsError
-from slugify import slugify
+
 
 class HotelService:
     def __init__(self, hotel_repo: HotelRepository):
@@ -36,26 +38,23 @@ class HotelService:
         return await self.hotel_repo.create(data)
 
     async def update(self, hotel_id: int, hotel_data: HotelUpdate) -> Hotel:
-        hotel = await self.hotel_repo.get_by_id(hotel_id)
-        if not hotel:
-            raise HotelNotFoundError(f"Hotel with id {hotel_id} not found")
+        hotel = await self.get_by_id(hotel_id)
 
         data = hotel_data.model_dump(exclude_unset=True)
 
         if "name" in data and data["name"] != hotel.name:
             new_slug = slugify(data["name"])
-            
+
             existing_hotel = await self.hotel_repo.get_by_slug(new_slug)
             if existing_hotel and existing_hotel.id != hotel_id:
-                raise HotelAlreadyExistsError(f"Hotel with slug '{new_slug}' already exists")
-                
+                raise HotelAlreadyExistsError(
+                    f"Hotel with slug '{new_slug}' already exists"
+                )
+
             data["slug"] = new_slug
 
-        return await self.hotel_repo.update(hotel_id, data)
+        return await self.hotel_repo.update(hotel, data)
 
     async def delete(self, hotel_id: int) -> None:
-        hotel = await self.hotel_repo.get_by_id(hotel_id)
-        if not hotel:
-            raise HotelNotFoundError(f"Hotel with id {hotel_id} not found")
-
-        await self.hotel_repo.delete(hotel_id)
+        hotel = await self.get_by_id(hotel_id)
+        await self.hotel_repo.delete(hotel)

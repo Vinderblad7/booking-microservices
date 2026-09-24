@@ -1,13 +1,15 @@
 from datetime import date
+
+from app.exceptions import (
+    BookingNotFoundError,
+    RoomNotAvailableError,
+    RoomNotFoundError,
+)
+from app.models.booking import Booking
 from app.repositories.booking import BookingRepository
 from app.repositories.room import RoomRepository
 from app.schemas.booking import BookingCreate, BookingUpdate
-from app.models.booking import Booking
-from app.exceptions import (
-    BookingNotFoundError,
-    RoomNotFoundError,
-    RoomNotAvailableError,
-)
+
 
 class BookingService:
     def __init__(self, booking_repo: BookingRepository, room_repo: RoomRepository):
@@ -50,7 +52,9 @@ class BookingService:
         if not is_available:
             raise RoomNotAvailableError("Room is already booked for these dates")
 
-        nights = (booking_data.check_out - booking_data.check_in).days
+        # Минимум 1 ночь, если заезд и выезд в один день
+        days = (booking_data.check_out - booking_data.check_in).days
+        nights = max(1, days)
         total_price = nights * room.price
 
         data = booking_data.model_dump()
@@ -59,17 +63,15 @@ class BookingService:
 
         return await self.booking_repo.create(data)
 
-    async def update_status(self, booking_id: int, status_data: BookingUpdate) -> Booking:
-        booking = await self.booking_repo.get_by_id(booking_id)
-        if not booking:
-            raise BookingNotFoundError(f"Booking with id {booking_id} not found")
+    async def update_status(
+        self, booking_id: int, status_data: BookingUpdate
+    ) -> Booking:
+        booking = await self.get_by_id(booking_id)
 
         data = status_data.model_dump(exclude_unset=True)
-        return await self.booking_repo.update(booking_id, data)
+        return await self.booking_repo.update(booking, data)
 
     async def delete(self, booking_id: int) -> None:
-        booking = await self.booking_repo.get_by_id(booking_id)
-        if not booking:
-            raise BookingNotFoundError(f"Booking with id {booking_id} not found")
+        booking = await self.get_by_id(booking_id)
 
-        await self.booking_repo.delete(booking_id)
+        await self.booking_repo.delete(booking)
