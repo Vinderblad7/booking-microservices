@@ -1,0 +1,65 @@
+.popular-destinations {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-end;
+    gap: 50px;
+}
+
+.popular-destinations-list {
+    margin-top: 120px;
+}
+
+.popular-destinations-list h2 {
+    font-size: 12px;
+    font-weight: 500;
+
+    margin-bottom: 10px;
+
+    text-transform: uppercase;
+
+    color: var(--color-gray);
+}
+
+.destinations-list {
+    display: flex;
+    gap: 12px;
+}
+
+.service-stats {
+    display: flex;
+    gap: 40px;
+}
+
+.stat {
+    display: flex;
+    flex-direction: column;
+
+    text-transform: lowercase;
+}
+
+.stat-value {
+    font-size: 18px;
+    font-weight: 800;
+
+    color: var(--color-light-blue);
+}
+
+.stat-label {
+    font-size: 13px;
+    font-weight: 500;
+
+    color: var(--color-gray);
+}
+
+.rating {
+    position: relative;
+
+    font-size: 18px;
+    font-weight: 800;
+}
+
+.rating::before {
+    content: url("../../assets/icons/star.svg");
+    position: relative;
+    right: 3px;
+}
