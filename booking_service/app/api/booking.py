@@ -4,7 +4,7 @@ from fastapi import APIRouter, status, Query
 from app.schemas.booking import (
     BookingCreate,
     BookingResponse,
-    BookingStatusUpdate,
+    BookingUpdate,
 )
 from app.api.dependencies import BookingServiceDep
 
@@ -55,7 +55,7 @@ async def create_booking(
 @router.patch("/{booking_id}/status", response_model=BookingResponse)
 async def update_booking_status(
     booking_id: int,
-    status_data: BookingStatusUpdate,
+    status_data: BookingUpdate,
     booking_service: BookingServiceDep,
 ):
     return await booking_service.update_status(

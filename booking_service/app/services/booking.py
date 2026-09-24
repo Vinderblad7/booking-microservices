@@ -1,7 +1,7 @@
 from datetime import date
 from app.repositories.booking import BookingRepository
 from app.repositories.room import RoomRepository
-from app.schemas.booking import BookingCreate, BookingStatusUpdate
+from app.schemas.booking import BookingCreate, BookingUpdate
 from app.models.booking import Booking
 from app.exceptions import (
     BookingNotFoundError,
@@ -59,7 +59,7 @@ class BookingService:
 
         return await self.booking_repo.create(data)
 
-    async def update_status(self, booking_id: int, status_data: BookingStatusUpdate) -> Booking:
+    async def update_status(self, booking_id: int, status_data: BookingUpdate) -> Booking:
         booking = await self.booking_repo.get_by_id(booking_id)
         if not booking:
             raise BookingNotFoundError(f"Booking with id {booking_id} not found")
