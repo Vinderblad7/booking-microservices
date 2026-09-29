@@ -5,11 +5,14 @@ from app.api.exception_handlers import register_exception_handlers
 from app.api.main_router import main_router
 
 from app.rabbitmq import rabbit_client
+from app.redis import redis_client
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await rabbit_client.connect()
+    await redis_client.connect()
     yield
+    await redis_client.close()
     await rabbit_client.close()
 
 app = FastAPI(

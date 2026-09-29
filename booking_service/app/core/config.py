@@ -16,6 +16,9 @@ class Settings(BaseSettings):
     BOOKING_EXCHANGE: str = "booking_exchange"
     BOOKING_CREATED_ROUTING_KEY: str = "booking.created"
 
+    REDIS_HOST: str = "localhost"
+    REDIS_PORT: int = 6379
+
     @property
     def DATABASE_URL(self) -> str:
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"
@@ -23,6 +26,10 @@ class Settings(BaseSettings):
     @property
     def RABBITMQ_URL(self) -> str:
         return f"amqp://{self.RABBITMQ_DEFAULT_USER}:{self.RABBITMQ_DEFAULT_PASS}@{self.RABBITMQ_HOST}:{self.RABBITMQ_PORT}/"
+
+    @property
+    def REDIS_URL(self) -> str:
+        return f"redis://{self.REDIS_HOST}:{self.REDIS_PORT}"
 
     model_config = SettingsConfigDict(
         env_file=".env",
