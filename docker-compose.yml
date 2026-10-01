@@ -1,18 +1,44 @@
 services:
+  booking_service:
+    build:
+      context: ./booking_service
+      dockerfile: Dockerfile
+    container_name: booking_service
+    restart: always
+    command: sh -c "alembic upgrade head && uvicorn app.main:app --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./booking_service/.env
+    environment:
+      POSTGRES_HOST: postgres_booking
+      POSTGRES_PORT: 5432
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+      RABBITMQ_HOST: rabbitmq
+      RABBITMQ_PORT: 5672
+    depends_on:
+      postgres_booking:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+
   postgres_booking:
     image: postgres:16-alpine
     container_name: booking_postgres
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: booking_user
+      POSTGRES_PASSWORD: booking_pass
       POSTGRES_DB: booking_db
     ports:
       - "5432:5432"
     volumes:
       - postgres_booking_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d booking_db"]
+      test: ["CMD-SHELL", "pg_isready -U booking_user -d booking_db"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -22,15 +48,15 @@ services:
     container_name: payment_postgres
     restart: always
     environment:
-      POSTGRES_USER: ${POSTGRES_USER}
-      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_USER: payment_user
+      POSTGRES_PASSWORD: payment_pass
       POSTGRES_DB: payment_db
     ports:
       - "5433:5432"
     volumes:
       - postgres_payment_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER} -d payment_db"]
+      test: ["CMD-SHELL", "pg_isready -U payment_user -d payment_db"]
       interval: 5s
       timeout: 5s
       retries: 5
@@ -40,11 +66,13 @@ services:
     container_name: booking_rabbitmq
     restart: always
     environment:
-      RABBITMQ_DEFAULT_USER: ${RABBITMQ_DEFAULT_USER}
-      RABBITMQ_DEFAULT_PASS: ${RABBITMQ_DEFAULT_PASS}
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
     ports:
       - "5672:5672"
       - "15672:15672"
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
     healthcheck:
       test: ["CMD", "rabbitmq-diagnostics", "-q", "ping"]
       interval: 5s
@@ -69,3 +97,4 @@ volumes:
   postgres_booking_data:
   postgres_payment_data:
   redis_data:
+  rabbitmq_data:
