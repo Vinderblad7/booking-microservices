@@ -1,0 +1,16 @@
+fastapi==0.141.1
+uvicorn==0.53.0
+uvloop==0.22.1
+watchfiles==1.2.0
+httptools==0.8.0
+SQLAlchemy==2.0.53
+asyncpg==0.31.0
+alembic==1.20.0
+pydantic==2.13.5
+pydantic-settings==2.15.0
+python-dotenv==1.2.3
+pwdlib[argon2]>=0.2.0
+pyjwt[crypto]>=2.8.0
+# RabbitMQ & Redis
+aio-pika==10.0.1
+redis>=5.0.0

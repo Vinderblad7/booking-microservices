@@ -43,6 +43,24 @@ services:
       timeout: 5s
       retries: 5
 
+  postgres_auth:
+    image: postgres:16-alpine
+    container_name: auth_postgres
+    restart: always
+    environment:
+      POSTGRES_USER: auth_user
+      POSTGRES_PASSWORD: auth_pass
+      POSTGRES_DB: auth_db
+    ports:
+      - "5434:5432"
+    volumes:
+      - postgres_auth_data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U auth_user -d auth_db"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
   postgres_payment:
     image: postgres:16-alpine
     container_name: payment_postgres
@@ -95,6 +113,7 @@ services:
 
 volumes:
   postgres_booking_data:
+  postgres_auth_data:
   postgres_payment_data:
   redis_data:
   rabbitmq_data:
