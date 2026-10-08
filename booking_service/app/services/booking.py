@@ -22,6 +22,10 @@ class BookingService:
     async def get_all(self) -> list[Booking]:
         return await self.booking_repo.get_all()
 
+    async def get_by_user(self, user_id: int) -> list[Booking]:
+        return await self.booking_repo.get_all(user_id=user_id)
+
+
     async def get_by_id(self, booking_id: int) -> Booking:
         booking = await self.booking_repo.get_by_id(booking_id)
         if not booking:

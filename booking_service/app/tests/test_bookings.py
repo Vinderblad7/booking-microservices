@@ -7,7 +7,7 @@ async def test_get_bookings_empty_or_list(client: AsyncClient) -> None:
     assert isinstance(response.json(), list)
 
 
-async def test_create_booking_success(client: AsyncClient):
+async def test_create_booking_success(client: AsyncClient, auth_headers: dict[str, str]):
     hotel_res = await client.post(
         "/api/hotels",
         json={"name": "Booking Hotel", "description": "Desc"}
@@ -26,7 +26,7 @@ async def test_create_booking_success(client: AsyncClient):
         "check_out": "2026-10-10"
     }
 
-    response = await client.post("/api/bookings", json=payload, params={"user_id": 1})
+    response = await client.post("/api/bookings", json=payload, headers=auth_headers)
 
     assert response.status_code == 201
     data = response.json()
@@ -41,12 +41,22 @@ async def test_create_booking_success(client: AsyncClient):
     assert get_res.json()["id"] == booking_id
 
 
-async def test_create_booking_invalid_data(client: AsyncClient):
+async def test_create_booking_unauthorized(client: AsyncClient):
+    payload = {
+        "room_id": 1,
+        "check_in": "2026-10-01",
+        "check_out": "2026-10-10"
+    }
+    response = await client.post("/api/bookings", json=payload)
+    assert response.status_code == 401
+
+
+async def test_create_booking_invalid_data(client: AsyncClient, auth_headers: dict[str, str]):
     invalid_payload = {
         "check_in": "2026-10-01"
     }
 
-    response = await client.post("/api/bookings", json=invalid_payload, params={"user_id": 1})
+    response = await client.post("/api/bookings", json=invalid_payload, headers=auth_headers)
 
     assert response.status_code == 422
     data = response.json()
@@ -78,7 +88,7 @@ async def test_check_room_availability_success(client: AsyncClient):
     assert isinstance(response.json(), bool)
 
 
-async def test_get_booking_by_id_success(client: AsyncClient):
+async def test_get_booking_by_id_success(client: AsyncClient, auth_headers: dict[str, str]):
     hotel_res = await client.post(
         "/api/hotels",
         json={"name": "Hotel Get Booking", "description": "Desc"}
@@ -94,7 +104,7 @@ async def test_get_booking_by_id_success(client: AsyncClient):
     booking_res = await client.post(
         "/api/bookings",
         json={"room_id": room_id, "check_in": "2026-12-01", "check_out": "2026-12-05"},
-        params={"user_id": 1}
+        headers=auth_headers,
     )
     booking_id = booking_res.json()["id"]
 
@@ -111,7 +121,7 @@ async def test_get_booking_by_id_not_found(client: AsyncClient):
     assert response.status_code == 404
 
 
-async def test_update_booking_status_success(client: AsyncClient):
+async def test_update_booking_status_success(client: AsyncClient, auth_headers: dict[str, str]):
     hotel_res = await client.post(
         "/api/hotels",
         json={"name": "Hotel Update Status", "description": "Desc"}
@@ -127,7 +137,7 @@ async def test_update_booking_status_success(client: AsyncClient):
     booking_res = await client.post(
         "/api/bookings",
         json={"room_id": room_id, "check_in": "2026-12-10", "check_out": "2026-12-15"},
-        params={"user_id": 1}
+        headers=auth_headers,
     )
     booking_id = booking_res.json()["id"]
 
@@ -143,7 +153,7 @@ async def test_update_booking_status_success(client: AsyncClient):
     assert data["status"] == "cancelled"
 
 
-async def test_delete_booking_success(client: AsyncClient):
+async def test_delete_booking_success(client: AsyncClient, auth_headers: dict[str, str]):
     hotel_res = await client.post(
         "/api/hotels",
         json={"name": "Hotel Delete Booking", "description": "Desc"}
@@ -159,7 +169,7 @@ async def test_delete_booking_success(client: AsyncClient):
     booking_res = await client.post(
         "/api/bookings",
         json={"room_id": room_id, "check_in": "2026-12-20", "check_out": "2026-12-25"},
-        params={"user_id": 1}
+        headers=auth_headers,
     )
     booking_id = booking_res.json()["id"]
 
@@ -173,3 +183,37 @@ async def test_delete_booking_success(client: AsyncClient):
 async def test_delete_booking_not_found(client: AsyncClient):
     delete_response = await client.delete("/api/bookings/99999")
     assert delete_response.status_code == 404
+
+
+async def test_get_my_bookings(client: AsyncClient, auth_headers: dict[str, str]):
+    hotel_res = await client.post(
+        "/api/hotels",
+        json={"name": "My Hotel", "description": "Desc"}
+    )
+    hotel_id = hotel_res.json()["id"]
+
+    room_res = await client.post(
+        "/api/rooms",
+        json={"hotel_id": hotel_id, "number": "999", "price": 150, "capacity": 2}
+    )
+    room_id = room_res.json()["id"]
+
+    payload = {
+        "room_id": room_id,
+        "check_in": "2026-11-01",
+        "check_out": "2026-11-05"
+    }
+    create_res = await client.post("/api/bookings", json=payload, headers=auth_headers)
+    assert create_res.status_code == 201
+
+    my_res = await client.get("/api/bookings/my", headers=auth_headers)
+    assert my_res.status_code == 200
+    my_bookings = my_res.json()
+    assert isinstance(my_bookings, list)
+    assert len(my_bookings) >= 1
+    assert any(b["id"] == create_res.json()["id"] for b in my_bookings)
+
+
+async def test_get_my_bookings_unauthorized(client: AsyncClient):
+    response = await client.get("/api/bookings/my")
+    assert response.status_code == 401

@@ -1,13 +1,12 @@
 from datetime import date
-from fastapi import APIRouter, status, Query
+from fastapi import APIRouter, Depends, Query, status
 
+from app.api.dependencies import BookingServiceDep, get_current_user_id
 from app.schemas.booking import (
     BookingCreate,
     BookingResponse,
     BookingUpdate,
 )
-from app.api.dependencies import BookingServiceDep
-
 
 router = APIRouter(prefix="/bookings", tags=["Bookings"])
 
@@ -35,6 +34,14 @@ async def check_room_availability(
     )
 
 
+@router.get("/my", response_model=list[BookingResponse])
+async def get_my_bookings(
+    booking_service: BookingServiceDep,
+    user_id: int = Depends(get_current_user_id),
+):
+    return await booking_service.get_by_user(user_id)
+
+
 @router.get("/{booking_id}", response_model=BookingResponse)
 async def get_booking_by_id(
     booking_id: int,
@@ -47,7 +54,7 @@ async def get_booking_by_id(
 async def create_booking(
     booking_data: BookingCreate,
     booking_service: BookingServiceDep,
-    user_id: int = Query(..., description="user ID"),
+    user_id: int = Depends(get_current_user_id),
 ):
     return await booking_service.create(booking_data=booking_data, user_id=user_id)
 
