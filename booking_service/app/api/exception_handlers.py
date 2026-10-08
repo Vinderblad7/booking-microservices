@@ -5,6 +5,7 @@ from app.exceptions import (
     BookingNotFoundError,
     HotelAlreadyExistsError,
     HotelNotFoundError,
+    InvalidTokenError,
     RoomNotAvailableError,
     RoomNotFoundError,
 )
@@ -24,6 +25,13 @@ async def conflict_handler(request: Request, exc: Exception) -> JSONResponse:
     )
 
 
+async def unauthorized_handler(request: Request, exc: Exception) -> JSONResponse:
+    return JSONResponse(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        content={"detail": str(exc)},
+    )
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(HotelNotFoundError, not_found_handler)
     app.add_exception_handler(RoomNotFoundError, not_found_handler)
@@ -31,3 +39,5 @@ def register_exception_handlers(app: FastAPI) -> None:
 
     app.add_exception_handler(HotelAlreadyExistsError, conflict_handler)
     app.add_exception_handler(RoomNotAvailableError, conflict_handler)
+
+    app.add_exception_handler(InvalidTokenError, unauthorized_handler)

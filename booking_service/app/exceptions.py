@@ -26,3 +26,8 @@ class BookingNotFoundError(Exception):
     def __init__(self, message: str = "Booking not found"):
         self.message = message
         super().__init__(self.message)
+
+class InvalidTokenError(Exception):
+    def __init__(self, message: str = "Invalid or expired token"):
+        self.message = message
+        super().__init__(self.message)
