@@ -1,6 +1,6 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, status, Depends
 
-from app.schemas.room import RoomCreate, RoomResponse, RoomUpdate
+from app.schemas.room import RoomCreate, RoomResponse, RoomUpdate, RoomFilter
 from app.api.dependencies import RoomServiceDep
 
 
@@ -10,8 +10,9 @@ router = APIRouter(prefix="/rooms", tags=["Rooms"])
 @router.get("", response_model=list[RoomResponse])
 async def get_rooms(
     room_service: RoomServiceDep,
+    filters: RoomFilter = Depends(),
 ):
-    return await room_service.get_all()
+    return await room_service.get_all(filters)
 
 
 @router.get("/{room_id}", response_model=RoomResponse)

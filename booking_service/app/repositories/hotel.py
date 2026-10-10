@@ -1,15 +1,29 @@
-from sqlalchemy import select
+from sqlalchemy import or_, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.hotel import Hotel
+from app.schemas.hotel import HotelFilter
 
 
 class HotelRepository:
     def __init__(self, session: AsyncSession):
         self.session = session
 
-    async def get_all(self, skip: int = 0, limit: int = 100) -> list[Hotel]:
-        query = select(Hotel).offset(skip).limit(limit)
+    async def get_all(self, filters: HotelFilter | None = None) -> list[Hotel]:
+        query = select(Hotel)
+        if filters:
+            if filters.query:
+                pattern = f"%{filters.query}%"
+                query = query.where(
+                    or_(
+                        Hotel.name.ilike(pattern),
+                        Hotel.description.ilike(pattern),
+                    )
+                )
+            query = query.offset(filters.skip).limit(filters.limit)
+        else:
+            query = query.offset(0).limit(100)
+
         result = await self.session.execute(query)
         return list(result.scalars().all())
 

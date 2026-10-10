@@ -23,3 +23,11 @@ class RoomResponse(RoomBase):
     id: int
 
     model_config = ConfigDict(from_attributes=True)
+
+class RoomFilter(BaseModel):
+    hotel_id: int | None = None
+    min_price: Decimal | None = None
+    max_price: Decimal | None = None
+    capacity: int | None = None
+    skip: int = 0
+    limit: int = 100

@@ -35,3 +35,8 @@ class HotelUpdate(BaseModel):
     name: str | None = Field(default=None, min_length=3, max_length=100)
     slug: str | None = Field(default=None, min_length=3, max_length=100)
     description: str | None = Field(default=None, max_length=1000)
+
+class HotelFilter(BaseModel):
+    query: str | None = None
+    skip: int = 0
+    limit: int = 100

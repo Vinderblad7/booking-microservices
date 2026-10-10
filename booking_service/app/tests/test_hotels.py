@@ -127,3 +127,41 @@ async def test_delete_hotel_success(client: AsyncClient):
 async def test_delete_hotel_not_found(client: AsyncClient):
     delete_response = await client.delete("/api/hotels/99999")
     assert delete_response.status_code == 404
+
+
+async def test_search_hotels_by_name_and_description(client: AsyncClient):
+    await client.post("/api/hotels", json={"name": "Grand Palace Hotel", "description": "Luxury suites in downtown"})
+    await client.post("/api/hotels", json={"name": "Sea Breeze Resort", "description": "Beachfront paradise hotel"})
+
+    response_name = await client.get("/api/hotels?query=grand")
+    assert response_name.status_code == 200
+    results_name = response_name.json()
+    assert len(results_name) == 1
+    assert results_name[0]["name"] == "Grand Palace Hotel"
+
+    response_desc = await client.get("/api/hotels?query=beachfront")
+    assert response_desc.status_code == 200
+    results_desc = response_desc.json()
+    assert len(results_desc) == 1
+    assert results_desc[0]["name"] == "Sea Breeze Resort"
+
+    response_none = await client.get("/api/hotels?query=nonexistent")
+    assert response_none.status_code == 200
+    assert response_none.json() == []
+
+
+async def test_search_hotels_pagination(client: AsyncClient):
+    await client.post("/api/hotels", json={"name": "Alpha Hotel", "description": "City center"})
+    await client.post("/api/hotels", json={"name": "Beta Hotel", "description": "City center"})
+    await client.post("/api/hotels", json={"name": "Gamma Hotel", "description": "City center"})
+
+    response_limit = await client.get("/api/hotels?query=Hotel&limit=2")
+    assert response_limit.status_code == 200
+    data_limit = response_limit.json()
+    assert len(data_limit) == 2
+
+    response_skip = await client.get("/api/hotels?query=Hotel&skip=1&limit=2")
+    assert response_skip.status_code == 200
+    data_skip = response_skip.json()
+    assert len(data_skip) == 2
+    assert data_skip[0] == data_limit[1]

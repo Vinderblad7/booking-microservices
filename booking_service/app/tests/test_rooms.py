@@ -144,3 +144,31 @@ async def test_delete_room_success(client: AsyncClient):
 async def test_delete_room_not_found(client: AsyncClient):
     delete_response = await client.delete("/api/rooms/99999")
     assert delete_response.status_code == 404
+
+
+async def test_filter_rooms_by_price_and_capacity(client: AsyncClient):
+    hotel_res = await client.post(
+        "/api/hotels",
+        json={"name": "Hotel For Filter", "description": "Filter testing"}
+    )
+    hotel_id = hotel_res.json()["id"]
+
+    await client.post("/api/rooms", json={"hotel_id": hotel_id, "number": "1", "price": 1000, "capacity": 1})
+    await client.post("/api/rooms", json={"hotel_id": hotel_id, "number": "2", "price": 2500, "capacity": 2})
+    await client.post("/api/rooms", json={"hotel_id": hotel_id, "number": "3", "price": 5000, "capacity": 4})
+
+    res_price = await client.get(f"/api/rooms?hotel_id={hotel_id}&min_price=2000&max_price=3000")
+    assert res_price.status_code == 200
+    rooms_price = res_price.json()
+    assert len(rooms_price) == 1
+    assert rooms_price[0]["number"] == "2"
+
+    res_capacity = await client.get(f"/api/rooms?hotel_id={hotel_id}&capacity=3")
+    assert res_capacity.status_code == 200
+    rooms_capacity = res_capacity.json()
+    assert len(rooms_capacity) == 1
+    assert rooms_capacity[0]["number"] == "3"
+
+    res_page = await client.get(f"/api/rooms?hotel_id={hotel_id}&limit=2")
+    assert res_page.status_code == 200
+    assert len(res_page.json()) == 2

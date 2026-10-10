@@ -4,7 +4,7 @@ from app.core.cache import cache
 from app.exceptions import HotelAlreadyExistsError, HotelNotFoundError
 from app.redis import redis_client
 from app.repositories.hotel import HotelRepository
-from app.schemas.hotel import HotelCreate, HotelResponse, HotelUpdate
+from app.schemas.hotel import HotelCreate, HotelFilter, HotelResponse, HotelUpdate
 
 
 class HotelService:
@@ -12,8 +12,8 @@ class HotelService:
         self.hotel_repo = hotel_repo
 
     @cache(expire=300, prefix="hotels:all")
-    async def get_all(self) -> list[HotelResponse]:
-        hotels = await self.hotel_repo.get_all()
+    async def get_all(self, filters: HotelFilter | None = None) -> list[HotelResponse]:
+        hotels = await self.hotel_repo.get_all(filters)
         return [HotelResponse.model_validate(h) for h in hotels]
 
     @cache(expire=300, prefix="hotels:id")

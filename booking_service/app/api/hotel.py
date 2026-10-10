@@ -1,15 +1,17 @@
-from fastapi import APIRouter, status
+from fastapi import APIRouter, Depends, status
 
-from app.schemas.hotel import HotelCreate, HotelResponse, HotelUpdate
 from app.api.dependencies import HotelServiceDep
-
+from app.schemas.hotel import HotelCreate, HotelFilter, HotelResponse, HotelUpdate
 
 router = APIRouter(prefix="/hotels", tags=["Hotels"])
 
 
 @router.get("", response_model=list[HotelResponse])
-async def get_hotels(hotel_service: HotelServiceDep):
-    return await hotel_service.get_all()
+async def get_hotels(
+    hotel_service: HotelServiceDep,
+    filters: HotelFilter = Depends(),
+):
+    return await hotel_service.get_all(filters)
 
 
 @router.get("/{hotel_id}", response_model=HotelResponse)

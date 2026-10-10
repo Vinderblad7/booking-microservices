@@ -3,7 +3,7 @@ from app.exceptions import HotelNotFoundError, RoomNotFoundError
 from app.redis import redis_client
 from app.repositories.hotel import HotelRepository
 from app.repositories.room import RoomRepository
-from app.schemas.room import RoomCreate, RoomResponse, RoomUpdate
+from app.schemas.room import RoomCreate, RoomResponse, RoomUpdate, RoomFilter
 
 
 class RoomService:
@@ -12,8 +12,8 @@ class RoomService:
         self.hotel_repo = hotel_repo
 
     @cache(expire=300, prefix="rooms:all")
-    async def get_all(self) -> list[RoomResponse]:
-        rooms = await self.room_repo.get_all()
+    async def get_all(self, filters: RoomFilter | None = None) -> list[RoomResponse]:
+        rooms = await self.room_repo.get_all(filters)
         return [RoomResponse.model_validate(r) for r in rooms]
 
     @cache(expire=300, prefix="rooms:id")
