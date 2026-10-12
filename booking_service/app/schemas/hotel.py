@@ -19,6 +19,14 @@ class HotelCreate(HotelBase):
     pass
 
 
+class HotelImageResponse(BaseModel):
+    id: int
+    hotel_id: int
+    url: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class HotelResponse(HotelBase):
     id: int
     slug: str = Field(
@@ -27,6 +35,7 @@ class HotelResponse(HotelBase):
         max_length=100,
         description="Hotel slug",
     )
+    images: list[HotelImageResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 

@@ -1,7 +1,13 @@
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, Depends, UploadFile, status
 
 from app.api.dependencies import HotelServiceDep
-from app.schemas.hotel import HotelCreate, HotelFilter, HotelResponse, HotelUpdate
+from app.schemas.hotel import (
+    HotelCreate,
+    HotelFilter,
+    HotelImageResponse,
+    HotelResponse,
+    HotelUpdate,
+)
 
 router = APIRouter(prefix="/hotels", tags=["Hotels"])
 
@@ -53,3 +59,27 @@ async def delete_hotel(
     hotel_service: HotelServiceDep,
 ):
     await hotel_service.delete(hotel_id)
+
+
+@router.post(
+    "/{hotel_id}/images",
+    response_model=HotelImageResponse,
+    status_code=status.HTTP_201_CREATED,
+)
+async def upload_hotel_image(
+    hotel_id: int,
+    file: UploadFile,
+    hotel_service: HotelServiceDep,
+):
+    return await hotel_service.upload_image(hotel_id, file)
+
+
+@router.delete(
+    "/images/{image_id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_hotel_image(
+    image_id: int,
+    hotel_service: HotelServiceDep,
+):
+    await hotel_service.delete_image(image_id)

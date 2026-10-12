@@ -31,3 +31,9 @@ class InvalidTokenError(Exception):
     def __init__(self, message: str = "Invalid or expired token"):
         self.message = message
         super().__init__(self.message)
+
+
+class ImageNotFoundError(Exception):
+    def __init__(self, message: str = "Image not found"):
+        self.message = message
+        super().__init__(self.message)

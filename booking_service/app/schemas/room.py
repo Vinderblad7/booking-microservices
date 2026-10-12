@@ -19,8 +19,17 @@ class RoomUpdate(BaseModel):
     capacity: int | None = Field(default=None, gt=0)
 
 
+class RoomImageResponse(BaseModel):
+    id: int
+    room_id: int
+    url: str
+
+    model_config = ConfigDict(from_attributes=True)
+
+
 class RoomResponse(RoomBase):
     id: int
+    images: list[RoomImageResponse] = Field(default_factory=list)
 
     model_config = ConfigDict(from_attributes=True)
 

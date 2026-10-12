@@ -25,3 +25,19 @@ class Room(Base):
 
     hotel: Mapped["Hotel"] = relationship(back_populates="rooms")
     bookings: Mapped[list["Booking"]] = relationship(back_populates="room")
+    images: Mapped[list["RoomImage"]] = relationship(
+        back_populates="room", cascade="all, delete-orphan"
+    )
+
+
+class RoomImage(Base):
+    __tablename__ = "room_images"
+
+    id: Mapped[int] = mapped_column(primary_key=True)
+    room_id: Mapped[int] = mapped_column(
+        ForeignKey("rooms.id", ondelete="CASCADE"), nullable=False
+    )
+    url: Mapped[str] = mapped_column(String(500), nullable=False)
+    key: Mapped[str] = mapped_column(String(255), nullable=False)
+
+    room: Mapped["Room"] = relationship(back_populates="images")

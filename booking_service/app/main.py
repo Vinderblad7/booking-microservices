@@ -7,11 +7,16 @@ from app.api.main_router import main_router
 
 from app.rabbitmq import rabbit_client
 from app.redis import redis_client
+from app.s3 import s3_client
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     await rabbit_client.connect()
     await redis_client.connect()
+    try:
+        await s3_client.init_bucket()
+    except Exception:
+        pass
     yield
     await redis_client.close()
     await rabbit_client.close()

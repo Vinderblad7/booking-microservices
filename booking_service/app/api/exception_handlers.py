@@ -5,6 +5,7 @@ from app.exceptions import (
     BookingNotFoundError,
     HotelAlreadyExistsError,
     HotelNotFoundError,
+    ImageNotFoundError,
     InvalidTokenError,
     RoomNotAvailableError,
     RoomNotFoundError,
@@ -36,6 +37,7 @@ def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(HotelNotFoundError, not_found_handler)
     app.add_exception_handler(RoomNotFoundError, not_found_handler)
     app.add_exception_handler(BookingNotFoundError, not_found_handler)
+    app.add_exception_handler(ImageNotFoundError, not_found_handler)
 
     app.add_exception_handler(HotelAlreadyExistsError, conflict_handler)
     app.add_exception_handler(RoomNotAvailableError, conflict_handler)

@@ -165,3 +165,28 @@ async def test_search_hotels_pagination(client: AsyncClient):
     data_skip = response_skip.json()
     assert len(data_skip) == 2
     assert data_skip[0] == data_limit[1]
+
+
+async def test_upload_and_delete_hotel_image(client: AsyncClient):
+    create_res = await client.post("/api/hotels", json={"name": "Photo Hotel", "description": "Has photos"})
+    hotel_id = create_res.json()["id"]
+
+    files = {"file": ("facade.jpg", b"fake jpeg image content", "image/jpeg")}
+    upload_res = await client.post(f"/api/hotels/{hotel_id}/images", files=files)
+    assert upload_res.status_code == 201
+    img_data = upload_res.json()
+    assert img_data["hotel_id"] == hotel_id
+    assert "url" in img_data
+    image_id = img_data["id"]
+
+    get_res = await client.get(f"/api/hotels/{hotel_id}")
+    assert get_res.status_code == 200
+    hotel_data = get_res.json()
+    assert len(hotel_data["images"]) == 1
+    assert hotel_data["images"][0]["id"] == image_id
+
+    del_res = await client.delete(f"/api/hotels/images/{image_id}")
+    assert del_res.status_code == 204
+
+    get_res_after = await client.get(f"/api/hotels/{hotel_id}")
+    assert len(get_res_after.json()["images"]) == 0

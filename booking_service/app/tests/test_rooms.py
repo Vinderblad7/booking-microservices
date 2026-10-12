@@ -172,3 +172,29 @@ async def test_filter_rooms_by_price_and_capacity(client: AsyncClient):
     res_page = await client.get(f"/api/rooms?hotel_id={hotel_id}&limit=2")
     assert res_page.status_code == 200
     assert len(res_page.json()) == 2
+
+
+async def test_upload_and_delete_room_image(client: AsyncClient):
+    hotel_res = await client.post("/api/hotels", json={"name": "Room Photo Hotel", "description": "Desc"})
+    hotel_id = hotel_res.json()["id"]
+
+    room_res = await client.post("/api/rooms", json={"hotel_id": hotel_id, "number": "909", "price": 1500, "capacity": 2})
+    room_id = room_res.json()["id"]
+
+    files = {"file": ("room.jpg", b"fake room jpeg content", "image/jpeg")}
+    upload_res = await client.post(f"/api/rooms/{room_id}/images", files=files)
+    assert upload_res.status_code == 201
+    img_data = upload_res.json()
+    assert img_data["room_id"] == room_id
+    assert "url" in img_data
+    image_id = img_data["id"]
+
+    get_res = await client.get(f"/api/rooms/{room_id}")
+    assert get_res.status_code == 200
+    assert len(get_res.json()["images"]) == 1
+
+    del_res = await client.delete(f"/api/rooms/images/{image_id}")
+    assert del_res.status_code == 204
+
+    get_res_after = await client.get(f"/api/rooms/{room_id}")
+    assert len(get_res_after.json()["images"]) == 0

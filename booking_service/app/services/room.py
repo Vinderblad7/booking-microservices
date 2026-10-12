@@ -1,9 +1,18 @@
+from fastapi import UploadFile
+
 from app.core.cache import cache
-from app.exceptions import HotelNotFoundError, RoomNotFoundError
+from app.exceptions import HotelNotFoundError, ImageNotFoundError, RoomNotFoundError
 from app.redis import redis_client
 from app.repositories.hotel import HotelRepository
 from app.repositories.room import RoomRepository
-from app.schemas.room import RoomCreate, RoomResponse, RoomUpdate, RoomFilter
+from app.s3 import s3_client
+from app.schemas.room import (
+    RoomCreate,
+    RoomFilter,
+    RoomImageResponse,
+    RoomResponse,
+    RoomUpdate,
+)
 
 
 class RoomService:
@@ -52,6 +61,27 @@ class RoomService:
         if not room:
             raise RoomNotFoundError(f"Room with id {room_id} not found")
 
-        await self.room_repo.delete(room)
+        for img in room.images:
+            await s3_client.delete_file(img.key)
 
+        await self.room_repo.delete(room)
+        await redis_client.delete_by_pattern("rooms:*")
+
+    async def upload_image(self, room_id: int, file: UploadFile) -> RoomImageResponse:
+        room = await self.room_repo.get_by_id(room_id)
+        if not room:
+            raise RoomNotFoundError(f"Room with id {room_id} not found")
+
+        url, key = await s3_client.upload_file(file, folder=f"rooms/{room_id}")
+        image = await self.room_repo.add_image(room_id=room_id, url=url, key=key)
+        await redis_client.delete_by_pattern("rooms:*")
+        return RoomImageResponse.model_validate(image)
+
+    async def delete_image(self, image_id: int) -> None:
+        image = await self.room_repo.get_image_by_id(image_id)
+        if not image:
+            raise ImageNotFoundError(f"Image with id {image_id} not found")
+
+        await s3_client.delete_file(image.key)
+        await self.room_repo.delete_image(image)
         await redis_client.delete_by_pattern("rooms:*")
