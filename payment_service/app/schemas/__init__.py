@@ -1,6 +1,7 @@
 from app.schemas.payment import (
     PaymentBase,
     PaymentCreate,
+    PaymentProcessRequest,
     PaymentResponse,
     PaymentUpdate,
 )
@@ -8,6 +9,7 @@ from app.schemas.payment import (
 __all__ = [
     "PaymentBase",
     "PaymentCreate",
+    "PaymentProcessRequest",
     "PaymentResponse",
     "PaymentUpdate",
 ]

@@ -27,3 +27,7 @@ class PaymentResponse(PaymentBase):
 
 class PaymentUpdate(BaseModel):
     status: PaymentStatus | None = Field(default=None)
+
+
+class PaymentProcessRequest(BaseModel):
+    card_number: str | None = Field(default=None)
