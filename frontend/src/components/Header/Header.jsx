@@ -8,7 +8,9 @@ function Header() {
             <div className="header-container">
 
                 <div className="logo">
-                    <img src={logoBadge} alt="badge" className="logo-badge" />
+                    <a href="/">
+                        <img src={logoBadge} alt="badge" className="logo-badge" />
+                    </a>
 
                     <div className="logo-text">
                         <span className="brand-top">Vinderblad &</span>

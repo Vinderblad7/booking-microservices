@@ -193,13 +193,19 @@ svg * {
 
 :root {
   /* Цвета */
+  --color-light: rgba(255, 255, 255, 1);
   --color-blue: rgba(0, 102, 255, 1);
   --color-light-blue: rgba(0, 210, 255, 1);
-  --color-dark-blue: rgba(15, 25, 53, 0.50);
   --color-orange: rgba(255, 90, 54, 1);
   --color-light-gray: rgba(228, 233, 242, 1);
   --color-gray: rgba(143, 155, 179, 1);
-  --color-stroke: rgba(228, 233, 242, 0.25);
+  --color-stroke: rgba(224, 229, 235, 1);
+
+  /* Цвет фона и текста */
+  --color-bg: rgba(247, 248, 250, 1);
+  --color-text-primary: rgba(23, 35, 50, 1);
+  --color-text-secondary: rgba(101, 113, 129, 1);
+  --color-text-light: rgba(237, 241, 245, 1);
 
   /* Шрифты */
   --font-main: 'Sora', sans-serif;
@@ -247,20 +253,12 @@ body {
   line-height: 1.5;
   font-family: var(--font-main);
 
-  color: white;
-  background: url('./assets/images/bg.jpg') no-repeat center center;
+  color: var(--color-text-primary);
+  background-color: var(--color-bg);
   background-size: cover;
 
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-}
-
-body::before {
-  content: "";
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.3); /* затемнение */
-  z-index: -1;
 }
 
 .container {

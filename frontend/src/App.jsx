@@ -1,17 +1,22 @@
-import { useState } from 'react'
-import Header from './components/Header/Header.jsx'
-import Hero from './components/Hero/Hero.jsx'
-import PopularDestinations from './components/DestinationCard/PopularDestinations.jsx'
+import { Routes, Route } from "react-router-dom";
 
-function App() {
-  const [count, setCount] = useState(0)
+import Home from "./pages/Home/Home";
+import Register from "./pages/Register/Register";
+import Login from "./pages/Login/Login";
+import Header from "./components/Header/Header";
 
+function App() {  
   return (
     <>
       <Header />
-      <Hero />
+      
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/login" element={<Login />} />
+      </Routes>
     </>
-  )
+  );
 }
 
-export default App
+export default App;

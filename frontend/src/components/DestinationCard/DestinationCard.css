@@ -9,10 +9,19 @@
     padding: 6px 12px;
 
     border: 1px solid var(--color-stroke);
-
-    background-color: var(--color-dark-blue);
     border-radius: var(--border-radius-lg);
+
+    background-color: var(--color-light);
+
+    transition: var(--transition-duration);
 }
+
+.destination-card:hover {
+    transform: translateY(-2px);
+    box-shadow: var(--box-shadow-lg);
+}
+
+
 
 .destination-card-image {
     width: 30px;
@@ -35,7 +44,7 @@
 
     font-size: 15px;
     font-weight: 500;
-    color: white;
+    color: var(--color-text-secondary);
 }
 
 .destination-card-info span {

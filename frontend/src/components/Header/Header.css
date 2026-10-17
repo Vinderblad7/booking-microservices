@@ -1,7 +1,11 @@
 .header {
     width: 100%;
-    background-color: rgba(0,0,0,0.03); /* полупрозрачный фон */
+
+    background-color: var(--color-light);
+
     padding: var(--def-padding);
+
+    border-bottom: 1px solid var(--color-stroke);
 }
 
 .header-container {
@@ -30,6 +34,14 @@
     margin-right: 10px;
 }
 
+.logo-badge {
+    transition: var(--transition-duration);
+}
+
+.logo-badge:hover {
+    transform: translateY(-2px);
+}
+
 .logo-text {
     display: flex;
     flex-direction: column;
@@ -56,13 +68,13 @@
     font-size: 15px;
     font-weight: 500;
 
-    color: var(--color-light-gray);
+    color: var(--color-text-secondary);
     transition: var(--transition-duration);
 }
 
 .navigation a:hover {
     transform: translateY(-2px);
-    color: white;
+    color: var(--color-text-primary);
 }
 
 .actions {
@@ -72,7 +84,7 @@
 }
 
 .lang-currency-switcher {
-    color: var(--color-light-gray);
+    color: var(--color-text-secondary);
     font-size: 14px;
 
     transition: var(--transition-duration);
@@ -80,7 +92,7 @@
 
 .lang-currency-switcher:hover {
     transform: translateY(-2px);
-    color: white;
+    color: var(--color-text-primary);
 }
 
 .login-button {
@@ -92,7 +104,6 @@
 
 .login-button:hover {
     transform: translateY(-2px);
-    color: var(--color-light-gray);
 }
 
 .signup-button {
@@ -100,6 +111,7 @@
     font-size: 16px;
     font-weight: 600;
 
+    color: var(--color-light);
     background-color: var(--color-blue);
 
     padding: 8px 40px 8px 20px;
@@ -110,7 +122,7 @@
 }
 
 .signup-button:hover {
-    background-color: rgba(7, 106, 255, 0.8);
+    transform: translateY(-2px);
 }
 
 .signup-button::before {
