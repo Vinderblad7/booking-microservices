@@ -16,6 +16,8 @@ class Settings(BaseSettings):
     BOOKING_EXCHANGE: str = "booking_exchange"
     BOOKING_CREATED_ROUTING_KEY: str = "booking.created"
 
+    PAYMENT_EXCHANGE: str = "payment_exchange"
+
     REDIS_HOST: str = "localhost"
     REDIS_PORT: int = 6379
 

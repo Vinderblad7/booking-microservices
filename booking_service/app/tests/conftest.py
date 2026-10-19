@@ -19,7 +19,10 @@ TestingSessionLocal = async_sessionmaker(engine_test, class_=AsyncSession, expir
 
 @pytest.fixture(autouse=True)
 def mock_rabbitmq() -> None:
+    rabbit_client.connect = AsyncMock()
+    rabbit_client.close = AsyncMock()
     rabbit_client.publish_event = AsyncMock()
+    rabbit_client.consume_payment_events = AsyncMock()
 
 
 @pytest.fixture(autouse=True, scope="function")
