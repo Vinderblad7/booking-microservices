@@ -171,3 +171,16 @@ async def test_create_duplicate_payment_when_already_success(
         headers=auth_headers,
     )
     assert duplicate_res.status_code == 409
+
+
+async def test_rabbitmq_publish_event():
+    from unittest.mock import AsyncMock, MagicMock
+    from app.rabbitmq import RabbitMQClient
+
+    client = RabbitMQClient()
+    client.payment_exchange = MagicMock()
+    client.payment_exchange.publish = AsyncMock()
+
+    await client.publish_event("payment.success", {"booking_id": 1})
+    client.payment_exchange.publish.assert_called_once()
+

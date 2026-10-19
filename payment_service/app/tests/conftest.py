@@ -1,5 +1,6 @@
 import collections.abc
 from datetime import datetime, timedelta, timezone
+from unittest.mock import AsyncMock
 
 import jwt
 import pytest
@@ -10,6 +11,7 @@ import app.models
 from app.core.config import settings
 from app.core.database import Base, get_session
 from app.main import app
+from app.rabbitmq import rabbit_client
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
 
@@ -19,6 +21,14 @@ engine_test = create_async_engine(
 TestingSessionLocal = async_sessionmaker(
     engine_test, class_=AsyncSession, expire_on_commit=False
 )
+
+
+@pytest.fixture(autouse=True)
+def mock_rabbitmq() -> None:
+    rabbit_client.connect = AsyncMock()
+    rabbit_client.close = AsyncMock()
+    rabbit_client.publish_event = AsyncMock()
+    rabbit_client.consume_booking_events = AsyncMock()
 
 
 @pytest.fixture(autouse=True, scope="function")
