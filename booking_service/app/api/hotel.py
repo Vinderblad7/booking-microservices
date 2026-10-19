@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, UploadFile, status
 
-from app.api.dependencies import HotelServiceDep
+from app.api.dependencies import CurrentAdminDep, HotelServiceDep
 from app.schemas.hotel import (
     HotelCreate,
     HotelFilter,
@@ -40,6 +40,7 @@ async def get_hotel_by_slug(
 async def create_hotel(
     hotel_data: HotelCreate,
     hotel_service: HotelServiceDep,
+    _: CurrentAdminDep,
 ):
     return await hotel_service.create(hotel_data)
 
@@ -49,6 +50,7 @@ async def update_hotel(
     hotel_id: int,
     hotel_data: HotelUpdate,
     hotel_service: HotelServiceDep,
+    _: CurrentAdminDep,
 ):
     return await hotel_service.update(hotel_id, hotel_data)
 
@@ -57,6 +59,7 @@ async def update_hotel(
 async def delete_hotel(
     hotel_id: int,
     hotel_service: HotelServiceDep,
+    _: CurrentAdminDep,
 ):
     await hotel_service.delete(hotel_id)
 
@@ -70,6 +73,7 @@ async def upload_hotel_image(
     hotel_id: int,
     file: UploadFile,
     hotel_service: HotelServiceDep,
+    _: CurrentAdminDep,
 ):
     return await hotel_service.upload_image(hotel_id, file)
 
@@ -81,5 +85,6 @@ async def upload_hotel_image(
 async def delete_hotel_image(
     image_id: int,
     hotel_service: HotelServiceDep,
+    _: CurrentAdminDep,
 ):
     await hotel_service.delete_image(image_id)

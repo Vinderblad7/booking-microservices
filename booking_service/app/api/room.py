@@ -1,6 +1,6 @@
 from fastapi import APIRouter, Depends, UploadFile, status
 
-from app.api.dependencies import RoomServiceDep
+from app.api.dependencies import CurrentAdminDep, RoomServiceDep
 from app.schemas.room import (
     RoomCreate,
     RoomFilter,
@@ -32,6 +32,7 @@ async def get_room_by_id(
 async def create_room(
     room_data: RoomCreate,
     room_service: RoomServiceDep,
+    _: CurrentAdminDep,
 ):
     return await room_service.create(room_data)
 
@@ -41,6 +42,7 @@ async def update_room(
     room_id: int,
     room_data: RoomUpdate,
     room_service: RoomServiceDep,
+    _: CurrentAdminDep,
 ):
     return await room_service.update(room_id, room_data)
 
@@ -49,6 +51,7 @@ async def update_room(
 async def delete_room(
     room_id: int,
     room_service: RoomServiceDep,
+    _: CurrentAdminDep,
 ):
     await room_service.delete(room_id)
 
@@ -62,6 +65,7 @@ async def upload_room_image(
     room_id: int,
     file: UploadFile,
     room_service: RoomServiceDep,
+    _: CurrentAdminDep,
 ):
     return await room_service.upload_image(room_id, file)
 
@@ -73,5 +77,6 @@ async def upload_room_image(
 async def delete_room_image(
     image_id: int,
     room_service: RoomServiceDep,
+    _: CurrentAdminDep,
 ):
     await room_service.delete_image(image_id)

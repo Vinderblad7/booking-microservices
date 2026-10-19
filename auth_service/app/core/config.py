@@ -18,6 +18,9 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7
 
+    FIRST_SUPERUSER_EMAIL: str = "admin@example.com"
+    FIRST_SUPERUSER_PASSWORD: str = "adminpassword"
+
     @property
     def DATABASE_URL(self) -> str:
         return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_HOST}:{self.POSTGRES_PORT}/{self.POSTGRES_DB}"

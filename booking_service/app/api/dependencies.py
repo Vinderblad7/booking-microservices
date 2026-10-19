@@ -6,7 +6,7 @@ from fastapi.security import OAuth2PasswordBearer
 
 from app.core.config import settings
 from app.dependencies import SessionDep
-from app.exceptions import InvalidTokenError
+from app.exceptions import InsufficientPermissionsError, InvalidTokenError
 from app.repositories.booking import BookingRepository
 from app.repositories.hotel import HotelRepository
 from app.repositories.room import RoomRepository
@@ -54,7 +54,23 @@ async def get_current_user_id(token: Annotated[str, Depends(oauth2_scheme)]) -> 
     return int(user_id_str)
 
 
+async def get_current_admin(token: Annotated[str, Depends(oauth2_scheme)]) -> dict:
+    try:
+        payload = decode_token(token)
+    except jwt.PyJWTError:
+        raise InvalidTokenError("Invalid or expired access token")
+
+    if payload.get("type") != "access":
+        raise InvalidTokenError("Invalid token type")
+
+    if payload.get("role") != "admin":
+        raise InsufficientPermissionsError("Admin privileges required")
+
+    return payload
+
+
 HotelServiceDep = Annotated[HotelService, Depends(get_hotel_service)]
 RoomServiceDep = Annotated[RoomService, Depends(get_room_service)]
 BookingServiceDep = Annotated[BookingService, Depends(get_booking_service)]
 CurrentUserIdDep = Annotated[int, Depends(get_current_user_id)]
+CurrentAdminDep = Annotated[dict, Depends(get_current_admin)]

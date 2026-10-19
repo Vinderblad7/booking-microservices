@@ -40,3 +40,18 @@ class TokenResponse(BaseModel):
 class TokenRefreshRequest(BaseModel):
     refresh_token: str
 
+
+class UserRoleUpdate(BaseModel):
+    role: UserRole
+
+
+class UserStatusUpdate(BaseModel):
+    is_active: bool
+
+
+class UserAdminCreate(BaseModel):
+    email: EmailStr
+    password: str = Field(min_length=6, max_length=128)
+    role: UserRole = UserRole.USER
+    is_active: bool = True
+

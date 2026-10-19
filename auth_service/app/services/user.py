@@ -14,8 +14,15 @@ from app.exceptions import (
     UserInactiveError,
     UserNotFoundError,
 )
+from app.models.user import UserRole
 from app.repositories.user import UserRepository
-from app.schemas.user import TokenResponse, UserLogin, UserRegister, UserResponse
+from app.schemas.user import (
+    TokenResponse,
+    UserAdminCreate,
+    UserLogin,
+    UserRegister,
+    UserResponse,
+)
 
 
 class UserService:
@@ -34,6 +41,21 @@ class UserService:
             raise UserNotFoundError(f"User with email {email} not found")
         return UserResponse.model_validate(user)
 
+    async def get_all(
+        self,
+        role: UserRole | None = None,
+        is_active: bool | None = None,
+        limit: int = 50,
+        offset: int = 0,
+    ) -> list[UserResponse]:
+        users = await self.user_repo.get_all(
+            role=role,
+            is_active=is_active,
+            limit=limit,
+            offset=offset,
+        )
+        return [UserResponse.model_validate(u) for u in users]
+
     async def register(self, user_data: UserRegister) -> UserResponse:
         user_exist = await self.user_repo.get_by_email(user_data.email)
         if user_exist:
@@ -44,6 +66,30 @@ class UserService:
 
         user = await self.user_repo.create(data)
         return UserResponse.model_validate(user)
+
+    async def create_by_admin(self, data: UserAdminCreate) -> UserResponse:
+        existing = await self.user_repo.get_by_email(data.email)
+        if existing:
+            raise UserAlreadyExistsError(f"User with email {data.email} already exists")
+
+        user_data = data.model_dump(exclude={"password"})
+        user_data["hashed_password"] = hash_password(data.password)
+        user = await self.user_repo.create(user_data)
+        return UserResponse.model_validate(user)
+
+    async def update_role(self, user_id: int, role: UserRole) -> UserResponse:
+        user = await self.user_repo.get_by_id(user_id)
+        if not user:
+            raise UserNotFoundError(f"User with id {user_id} not found")
+        updated = await self.user_repo.update(user, {"role": role})
+        return UserResponse.model_validate(updated)
+
+    async def update_status(self, user_id: int, is_active: bool) -> UserResponse:
+        user = await self.user_repo.get_by_id(user_id)
+        if not user:
+            raise UserNotFoundError(f"User with id {user_id} not found")
+        updated = await self.user_repo.update(user, {"is_active": is_active})
+        return UserResponse.model_validate(updated)
 
     async def login(self, creds: UserLogin) -> TokenResponse:
         user = await self.user_repo.get_by_email(creds.email)

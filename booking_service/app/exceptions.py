@@ -37,3 +37,9 @@ class ImageNotFoundError(Exception):
     def __init__(self, message: str = "Image not found"):
         self.message = message
         super().__init__(self.message)
+
+
+class InsufficientPermissionsError(Exception):
+    def __init__(self, message: str = "Admin privileges required"):
+        self.message = message
+        super().__init__(self.message)

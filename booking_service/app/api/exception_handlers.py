@@ -6,6 +6,7 @@ from app.exceptions import (
     HotelAlreadyExistsError,
     HotelNotFoundError,
     ImageNotFoundError,
+    InsufficientPermissionsError,
     InvalidTokenError,
     RoomNotAvailableError,
     RoomNotFoundError,
@@ -33,6 +34,13 @@ async def unauthorized_handler(request: Request, exc: Exception) -> JSONResponse
     )
 
 
+async def forbidden_handler(request: Request, exc: Exception) -> JSONResponse:
+    return JSONResponse(
+        status_code=status.HTTP_403_FORBIDDEN,
+        content={"detail": str(exc)},
+    )
+
+
 def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(HotelNotFoundError, not_found_handler)
     app.add_exception_handler(RoomNotFoundError, not_found_handler)
@@ -43,3 +51,4 @@ def register_exception_handlers(app: FastAPI) -> None:
     app.add_exception_handler(RoomNotAvailableError, conflict_handler)
 
     app.add_exception_handler(InvalidTokenError, unauthorized_handler)
+    app.add_exception_handler(InsufficientPermissionsError, forbidden_handler)

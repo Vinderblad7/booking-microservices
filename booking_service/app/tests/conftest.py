@@ -6,6 +6,7 @@ import pytest
 from httpx import ASGITransport, AsyncClient
 from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
 
+from app.api.dependencies import get_current_admin
 from app.core.config import settings
 from app.core.database import Base, get_session
 from app.rabbitmq import rabbit_client
@@ -45,6 +46,7 @@ def auth_token() -> str:
     payload = {
         "sub": "1",
         "type": "access",
+        "role": "user",
         "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
     }
     return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
@@ -55,6 +57,22 @@ def auth_headers(auth_token: str) -> dict[str, str]:
     return {"Authorization": f"Bearer {auth_token}"}
 
 
+@pytest.fixture
+def admin_token() -> str:
+    payload = {
+        "sub": "1",
+        "type": "access",
+        "role": "admin",
+        "exp": datetime.now(timezone.utc) + timedelta(minutes=30),
+    }
+    return jwt.encode(payload, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
+
+
+@pytest.fixture
+def admin_headers(admin_token: str) -> dict[str, str]:
+    return {"Authorization": f"Bearer {admin_token}"}
+
+
 @pytest.fixture(scope="function")
 async def client() -> collections.abc.AsyncGenerator[AsyncClient, None]:
     async def override_get_session() -> collections.abc.AsyncGenerator[AsyncSession, None]:
@@ -62,6 +80,7 @@ async def client() -> collections.abc.AsyncGenerator[AsyncClient, None]:
             yield session
 
     app.dependency_overrides[get_session] = override_get_session
+    app.dependency_overrides[get_current_admin] = lambda: {"sub": "1", "role": "admin"}
 
     async with AsyncClient(
         transport=ASGITransport(app=app),

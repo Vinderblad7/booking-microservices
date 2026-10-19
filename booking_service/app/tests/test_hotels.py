@@ -190,3 +190,19 @@ async def test_upload_and_delete_hotel_image(client: AsyncClient):
 
     get_res_after = await client.get(f"/api/hotels/{hotel_id}")
     assert len(get_res_after.json()["images"]) == 0
+
+
+async def test_create_hotel_unauthorized():
+    from app.main import app
+    from httpx import ASGITransport, AsyncClient
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+        response = await ac.post("/api/hotels", json={"name": "Hotel", "description": "Desc"})
+        assert response.status_code == 401
+
+
+async def test_create_hotel_forbidden(auth_headers: dict[str, str]):
+    from app.main import app
+    from httpx import ASGITransport, AsyncClient
+    async with AsyncClient(transport=ASGITransport(app=app), base_url="http://test") as ac:
+        response = await ac.post("/api/hotels", json={"name": "Hotel", "description": "Desc"}, headers=auth_headers)
+        assert response.status_code == 403
