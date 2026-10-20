@@ -10,6 +10,7 @@ from app.api.dependencies import get_current_admin
 from app.core.config import settings
 from app.core.database import Base, get_session
 from app.rabbitmq import rabbit_client
+from app.s3 import s3_client
 from app.main import app
 
 TEST_DATABASE_URL = "sqlite+aiosqlite:///:memory:"
@@ -24,6 +25,15 @@ def mock_rabbitmq() -> None:
     rabbit_client.close = AsyncMock()
     rabbit_client.publish_event = AsyncMock()
     rabbit_client.consume_payment_events = AsyncMock()
+
+
+@pytest.fixture(autouse=True)
+async def init_s3() -> None:
+    try:
+        await s3_client.init_bucket()
+    except Exception:
+        pass
+
 
 
 @pytest.fixture(autouse=True, scope="function")

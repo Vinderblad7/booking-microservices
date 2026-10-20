@@ -52,12 +52,21 @@ class S3Client:
         content_type = file.content_type or "image/jpeg"
 
         async with self._get_client() as client:
-            await client.put_object(
-                Bucket=self.bucket_name,
-                Key=key,
-                Body=content,
-                ContentType=content_type,
-            )
+            try:
+                await client.put_object(
+                    Bucket=self.bucket_name,
+                    Key=key,
+                    Body=content,
+                    ContentType=content_type,
+                )
+            except Exception:
+                await self.init_bucket()
+                await client.put_object(
+                    Bucket=self.bucket_name,
+                    Key=key,
+                    Body=content,
+                    ContentType=content_type,
+                )
 
         url = f"{settings.S3_PUBLIC_URL}/{self.bucket_name}/{key}"
         return url, key
