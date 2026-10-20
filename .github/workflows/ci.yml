@@ -1,0 +1,41 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - master
+      - main
+  pull_request:
+    branches:
+      - master
+      - main
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Prepare environment files
+        run: |
+          cp auth_service/.env.example auth_service/.env
+          cp booking_service/.env.example booking_service/.env
+          cp payment_service/.env.example payment_service/.env
+
+      - name: Build Docker images
+        run: docker compose build
+
+      - name: Run Auth Service Tests
+        run: docker compose run --rm auth_service pytest app/tests
+
+      - name: Run Booking Service Tests
+        run: docker compose run --rm booking_service pytest app/tests
+
+      - name: Run Payment Service Tests
+        run: docker compose run --rm payment_service pytest app/tests
+
+      - name: Stop containers
+        if: always()
+        run: docker compose down -v
