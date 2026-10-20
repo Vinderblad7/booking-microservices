@@ -40,6 +40,7 @@
 
 .logo-badge:hover {
     transform: translateY(-2px);
+    filter: brightness(0.95);
 }
 
 .logo-text {
@@ -123,6 +124,7 @@
 
 .signup-button:hover {
     transform: translateY(-2px);
+    filter: brightness(0.95);
 }
 
 .signup-button::before {

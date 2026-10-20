@@ -29,8 +29,8 @@ function Header() {
 
                 <div className="actions">
                     <button className="lang-currency-switcher">RU \ RUB</button>
-                    <button className="login-button">Войти</button>
-                    <button className="signup-button">Регистрация</button>
+                    <a href="/login"><button className="login-button">Войти</button></a>
+                    <a href="/register"><button className="signup-button">Регистрация</button></a>
                 </div>
 
             </div>

@@ -1,0 +1,104 @@
+.register-page {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+
+    gap: 80px;
+
+    min-height: calc(100vh - 80px);
+
+    margin: 30px 115px;
+}
+
+.register-visual {
+    width: 550px;
+    height: 550px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+
+    padding: 30px 20px;
+
+    border-radius: var(--border-radius-sm);
+    background-image:
+        linear-gradient(
+            to bottom,
+            rgba(12, 26, 41, 0.1569) 0%,
+            rgba(12, 26, 41, 0) 42%,
+            rgba(12, 26, 41, 0.9098) 100%
+        ),
+        url("../../assets/images/Amalfi_coast.jpg");
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+}
+
+.register-visual::after{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+
+    padding: 30px 20px;
+}
+
+
+.register-visual-content {
+    max-width: 400px;
+}
+
+.register-visual-location {
+    position: relative;
+    align-self: flex-start;
+
+    padding: 6px 12px 6px 35px;
+
+    color: var(--color-light);
+    background-color: rgba(21, 37, 53, 0.502);
+    border-radius: var(--border-radius-lg);
+    font-size: 0.65rem;
+
+    z-index: 1;
+}
+
+.register-visual-location::before {
+    content: "";
+    position: absolute;
+    
+    left: 0px;
+    top: 50%;
+    transform: translateY(-50%);
+
+    width: 30px;
+    height: 30px;   
+
+    background-image: url("../../assets/icons/field-icon-bg.svg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+.register-visual-content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    line-height: 1.2;
+    color: var(--color-light);
+}
+
+.register-visual-content h1::before {
+    content: "";
+    display: block;
+
+    width: 40px;
+    height: 3px;
+    margin-bottom: 20px;
+
+    background-color: rgba(248, 141, 83, 1);
+    border-radius: var(--border-radius-sm);
+}
+
+.register-visual-content p {
+    font-size: 1rem;
+    line-height: 1.5;
+    color: var(--color-light-gray);
+    margin-top: 10px;
+}

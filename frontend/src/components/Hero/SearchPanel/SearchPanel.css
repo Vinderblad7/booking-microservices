@@ -102,6 +102,7 @@
 
 .search-field-button:hover {
     transform: translateY(-2px);
+    filter: brightness(0.95);
 }
 
 
