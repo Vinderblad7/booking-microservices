@@ -5,7 +5,7 @@ import '../../services/auth'
 import eyeOpen from '../../assets/icons/eye-open.svg';
 import eyeClosed from '../../assets/icons/eye-closed.svg';
 import check from '../../assets/icons/check.svg';
-import { registerUser } from '../../services/auth';
+import { registerUser, loginUser } from '../../services/auth';
 
 function AuthForm({ mode = 'register' }) {
     const isRegister = mode === 'register';
@@ -54,22 +54,33 @@ function AuthForm({ mode = 'register' }) {
         try {
             setIsSubmitting(true);
 
-            await registerUser({ email, password });
+            if(isRegister) {
+                await registerUser({ email, password });
 
-            setSuccessMessage(
-                'Аккаунт успешно создан! Теперь вы можете войти.'
-            );
-            setEmail('');
-            setPassword('');
-            setErrors({});
+                setSuccessMessage(
+                    'Аккаунт успешно создан! Теперь вы можете войти.'
+                );
+                setEmail('');
+                setPassword('');
+                setErrors({});
+
+            } else {
+
+                const data = await loginUser({ email, password });
+
+                console.log('Успешный вход:', data);
+
+            }
         } catch (error) {
-            if (error.status === 409) {
+            if (isRegister && error.status === 409) {
                 setServerError('Пользователь с таким email уже существует.');
+            } else if (!isRegister && error.status === 401) {
+                setServerError('Неверный email или пароль.');
             } else if (error.status === 422) {
                 setServerError('Проверьте правильность введённых данных.');
             } else {
                 setServerError(
-                    error.message || 'Не удалось создать аккаунт. Попробуйте позже.'
+                    error.message || 'Произошла ошибка. Попробуйте позже.'
                 );
             }
         } finally {
@@ -149,8 +160,8 @@ function AuthForm({ mode = 'register' }) {
                                     type={isPasswordVisible ? 'text' : 'password'}
                                     id="password"
                                     name="password"
-                                    placeholder="Создайте пароль"
-                                    autoComplete="new-password"
+                                    placeholder={isRegister ? 'Создайте пароль' : 'Введите пароль'}
+                                    autoComplete={isRegister ? 'new-password' : 'current-password'}
                                     value={password}
                                     onChange={(event) => setPassword(event.target.value)}
                                     required
@@ -184,9 +195,11 @@ function AuthForm({ mode = 'register' }) {
                                 </span>
                             )}
 
-                            <span className="auth-field-hint">
-                                От 6 до 128 символов
-                            </span>
+                            {isRegister && (
+                                <span className="auth-field-hint">
+                                    От 6 до 128 символов
+                                </span>
+                            )}
 
                         </div>
 
@@ -206,7 +219,10 @@ function AuthForm({ mode = 'register' }) {
                             type="submit"
                             disabled={isSubmitting}
                         >
-                            {isSubmitting ? 'Создаем аккаунт...' : 'Создать аккаунт'}
+                            {isSubmitting 
+                                ? (isRegister ? 'Создаем аккаунт...' : 'Входим...')
+                                : (isRegister ? 'Создать аккаунт' : 'Войти')
+                            }
                         </button>
 
                     </form>
@@ -220,10 +236,19 @@ function AuthForm({ mode = 'register' }) {
                         Продолжить с Google
                     </button>
 
-                    <div className='auth-footer'>
-                        <span>Уже есть аккаунт?</span>
-                        <a href='/login'>Войти</a>
-                    </div>
+                    {isRegister 
+                        ? (
+                            <div className='auth-footer'>
+                                <span>Уже есть аккаунт?</span>
+                                <a href='/login'>Войти</a>
+                            </div>
+                        )
+                        : (
+                            <div className='auth-footer'>
+                                <span>Нету аккаунта?</span>
+                                <a href='/register'>Регистрация</a>
+                            </div>
+                    )}
                 </>
             
             )}

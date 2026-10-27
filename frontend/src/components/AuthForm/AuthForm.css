@@ -267,6 +267,11 @@
     transform: translateY(-40%);
 }
 
+.auth-success-button:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.95);
+}
+
 
 
 

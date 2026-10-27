@@ -25,3 +25,29 @@ export async function registerUser({ email, password }) {
     
     return data;
 }
+
+export async function loginUser({ email, password }) {
+    const response = await fetch(`${AUTH_API_URL}/login`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+            email: email.trim(),
+            password,
+        }),
+    });
+
+    const data = await response.json().catch(() => null);
+
+    if (!response.ok) {
+        const error = new Error(
+            data?.detail || 'Не удалось войти в аккаунт'
+        );
+
+        error.status = response.status;
+        throw error;
+    }
+
+    return data;
+}

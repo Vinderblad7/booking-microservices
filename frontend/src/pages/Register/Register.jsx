@@ -12,13 +12,12 @@ function Register() {
 
                 <div className="register-visual-content">
                     
-
-                    <h1 className="register-visual__title">
+                    <h1>
                         Ваше следующее<br></br>путешествие
                         начинается<br></br>здесь
                     </h1>
 
-                    <p className="register-visual__text">
+                    <p>
                         Сохраняйте любимые места и планируйте
                         путешествия удобнее.
                     </p>
