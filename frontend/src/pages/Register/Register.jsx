@@ -24,11 +24,11 @@ function Register() {
                     </p>
 
                 </div>
-                
+
             </section>
 
             <section className="register-form">
-                <AuthForm />
+                <AuthForm mode="register"/>
             </section>
 
         </main>

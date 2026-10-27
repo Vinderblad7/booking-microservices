@@ -206,6 +206,7 @@ svg * {
   --color-text-primary: rgba(23, 35, 50, 1);
   --color-text-secondary: rgba(101, 113, 129, 1);
   --color-text-light: rgba(237, 241, 245, 1);
+  --color-error: rgba(189, 52, 52, 1);
 
   /* Шрифты */
   --font-main: 'Sora', sans-serif;
