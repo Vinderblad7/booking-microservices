@@ -1,14 +1,17 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './AuthForm.css';
 import '../../services/auth'
 import eyeOpen from '../../assets/icons/eye-open.svg';
 import eyeClosed from '../../assets/icons/eye-closed.svg';
 import check from '../../assets/icons/check.svg';
-import { registerUser, loginUser } from '../../services/auth';
+import { registerUser } from '../../services/auth';
+import { useAuth } from '../../context/AuthContext';
 
 function AuthForm({ mode = 'register' }) {
     const isRegister = mode === 'register';
+    const navigate = useNavigate();
+    const { login } = useAuth();
     const [isPasswordVisible, setIsPasswordVisible] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -66,10 +69,9 @@ function AuthForm({ mode = 'register' }) {
 
             } else {
 
-                const data = await loginUser({ email, password });
-
-                console.log('Успешный вход:', data);
-
+                await login({ email, password });
+                navigate('/');
+                
             }
         } catch (error) {
             if (isRegister && error.status === 409) {

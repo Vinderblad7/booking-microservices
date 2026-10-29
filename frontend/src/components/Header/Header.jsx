@@ -1,7 +1,11 @@
 import logoBadge from '../../assets/icons/logo-badge.svg';
 import './Header.css';
+import { useAuth } from '../../context/AuthContext';
+import { useState } from 'react';
 
 function Header() {
+    const { user, isAuthLoading, logout } = useAuth();
+    const [isMenuOpen, setIsMenuOpen] = useState(false);
     return (
         <header className="header">
 
@@ -29,8 +33,50 @@ function Header() {
 
                 <div className="actions">
                     <button className="lang-currency-switcher">RU \ RUB</button>
-                    <a href="/login"><button className="login-button">Войти</button></a>
-                    <a href="/register"><button className="signup-button">Регистрация</button></a>
+
+                    {!isAuthLoading && (
+                        user ? (
+                            <div className='profile-menu'>
+                                <button 
+                                    className='user-avatar'
+                                    type='button'
+                                    aria-label={`Профиль пользователя ${user.email}`}
+                                    onClick={() => setIsMenuOpen((isOpen) => !isOpen)}
+                                >
+                                    {user.email.charAt(0).toUpperCase()}
+                                </button>
+
+                                {isMenuOpen && (
+                                    <div className='profile-dropdown' role='menu'>
+                                        <p className='profile-email'>{user.email}</p>
+
+                                        <button
+                                            type='button'
+                                            role='menuitem'
+                                            onClick={() => {
+                                                logout();
+                                                setIsMenuOpen(false);
+                                            }}
+                                        >
+                                            Выйти
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        
+                        ) : (
+                            <>
+                                <a href="/login">
+                                    <button className="login-button">Войти</button>
+                                </a>
+
+                                <a href="/register">
+                                    <button className="signup-button">Регистрация</button>
+                                </a>
+                            </>
+                        )  
+                    )}
+                    
                 </div>
 
             </div>

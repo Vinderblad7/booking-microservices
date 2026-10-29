@@ -135,3 +135,78 @@
     transform: translateY(-40%);
 }
 
+.user-avatar {
+    width: 40px;
+    height: 40px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    border: none;
+    border-radius: 50%;
+
+    color: var(--color-light);
+    background-color: var(--color-blue);
+
+    font-size: 16px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+.profile-menu {
+    position: relative;
+}
+
+.profile-dropdown {
+    position: absolute;
+
+    display: flex;
+    justify-content: space-between;
+    flex-direction: column;
+
+    top: calc(100% + 8px);
+    right: 0;
+    z-index: 10;
+
+    min-height: 190px;
+    padding: 8px;
+
+    background-color: var(--color-light);
+    border: 1px solid var(--color-stroke);
+    border-radius: var(--border-radius-sm);
+    box-shadow: 0 8px 24px rgb(0 0 0 / 12px);
+}
+
+.profile-email {
+    margin: 0;
+    padding: 10px 12px;
+
+    color: var(--color-text-secondary);
+    font-size: 14px;
+}
+
+.profile-dropdown button{
+    display: flex;
+
+    width: 100%;
+    padding: 10px 12px;
+
+    border: none;
+    border-radius: var(--border-radius-sm);
+
+    color: var(--color-light);
+    background-color: var(--color-error);
+
+    text-align: left;
+    cursor: pointer;
+
+    transition: var(--transition-duration);
+}
+
+.profile-dropdown button:hover {
+    transform: translateY(-2px);
+    filter: brightness(0.95);
+}
+
