@@ -2,7 +2,7 @@ from typing import Annotated
 
 import jwt
 from fastapi import Depends
-from fastapi.security import OAuth2PasswordBearer
+from fastapi.security import HTTPAuthorizationCredentials, HTTPBearer
 
 from app.core.config import settings
 from app.dependencies import SessionDep
@@ -14,7 +14,7 @@ from app.services.booking import BookingService
 from app.services.hotel import HotelService
 from app.services.room import RoomService
 
-oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
+bearer_scheme = HTTPBearer()
 
 
 async def get_hotel_service(session: SessionDep) -> HotelService:
@@ -38,7 +38,14 @@ def decode_token(token: str) -> dict:
     return jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
 
 
-async def get_current_user_id(token: Annotated[str, Depends(oauth2_scheme)]) -> int:
+async def get_current_user_id(
+    credentials: Annotated[
+        HTTPAuthorizationCredentials,
+        Depends(bearer_scheme),
+    ],
+) -> int:
+    token = credentials.credentials
+
     try:
         payload = decode_token(token)
     except jwt.PyJWTError:
@@ -54,7 +61,14 @@ async def get_current_user_id(token: Annotated[str, Depends(oauth2_scheme)]) -> 
     return int(user_id_str)
 
 
-async def get_current_admin(token: Annotated[str, Depends(oauth2_scheme)]) -> dict:
+async def get_current_admin(
+    credentials: Annotated[
+        HTTPAuthorizationCredentials,
+        Depends(bearer_scheme),
+    ],
+) -> dict:
+    token = credentials.credentials
+
     try:
         payload = decode_token(token)
     except jwt.PyJWTError:

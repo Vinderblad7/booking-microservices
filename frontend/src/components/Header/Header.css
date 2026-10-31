@@ -35,7 +35,9 @@
 }
 
 .logo-badge {
-    transition: var(--transition-duration);
+    transition: 
+        transform var(--transition-duration),
+        filter var(--transition-duration);
 }
 
 .logo-badge:hover {
@@ -119,7 +121,9 @@
 
     border-radius: var(--border-radius-sm);
 
-    transition: var(--transition-duration);
+    transition: 
+        transform var(--transition-duration),
+        filter var(--transition-duration);
 }
 
 .signup-button:hover {
@@ -202,7 +206,9 @@
     text-align: left;
     cursor: pointer;
 
-    transition: var(--transition-duration);
+    transition: 
+        transform var(--transition-duration),
+        filter var(--transition-duration);
 }
 
 .profile-dropdown button:hover {

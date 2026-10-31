@@ -24,7 +24,7 @@ function Header() {
                 </div>
                 
                 <nav className="navigation">
-                    <a href="/directions">Направления</a>
+                    <a href="/">Направления</a>
                     <a href="/hotels">Отели</a>
                     <a href="/flights">Авиабилеты</a>
                     <a href="/tours">Готовые туры</a>
